@@ -1,25 +1,16 @@
-2025-06-20 17:59:38,977 - DEBUG - [MAIN] Received query: Who was  Rahul Sharma?
-2025-06-20 17:59:38,979 - DEBUG - [NLP] Input received: Who was  Rahul Sharma?
-2025-06-20 17:59:39,732 - DEBUG - [NLP] Detected language: so
-2025-06-20 17:59:40,011 - DEBUG - [NLP] NER results: [{'text': 'Rahul Sharma', 'label': 'PERSON'}]
-2025-06-20 18:00:00,379 - DEBUG - [NLP] Intent prediction: referral_status (score: 0.13)
-2025-06-20 18:00:00,379 - DEBUG - [NLP] Final NLP output → Intent: 'referral_status', Entity: 'Rahul Sharma'
-2025-06-20 18:00:00,379 - DEBUG - [MAIN] NLP result → intent: 'referral_status', entity: 'Rahul Sharma'
-2025-06-20 18:00:00,379 - DEBUG - [MAIN] Handling new intent: referral_status
-2025-06-20 18:01:00,445 - DEBUG - [MAIN] Received query: What is the date of birth of Rahul Sharma?
-2025-06-20 18:01:00,445 - DEBUG - [NLP] Input received: What is the date of birth of Rahul Sharma?
-2025-06-20 18:01:00,445 - DEBUG - [NLP] Detected language: en
-2025-06-20 18:01:00,653 - DEBUG - [NLP] NER results: [{'text': 'Rahul Sharma', 'label': 'PERSON'}]
-2025-06-20 18:01:18,895 - DEBUG - [NLP] Intent prediction: get_patient_dob (score: 0.29)
-2025-06-20 18:01:18,895 - DEBUG - [NLP] Final NLP output → Intent: 'get_patient_dob', Entity: 'Rahul Sharma'
-2025-06-20 18:01:18,895 - DEBUG - [MAIN] NLP result → intent: 'get_patient_dob', entity: 'Rahul Sharma'
-2025-06-20 18:01:18,895 - DEBUG - [MAIN] Routing to get_patient_dob('Rahul Sharma')
-2025-06-20 18:01:18,895 - DEBUG - [MONGO] Initializing AsyncIOMotorClient for current event loop.
-2025-06-20 18:01:18,945 - DEBUG - [MONGO] Querying DOB for: Rahul Sharma
-2025-06-20 18:01:21,943 - DEBUG - [MONGO] Found DOB for Rahul Sharma: 1985-06-15
-2025-06-20 18:01:21,946 - DEBUG - [MAIN] Sending context to RAG generator...
-2025-06-20 18:01:21,946 - DEBUG - [RAG] Building RAG prompt...
-2025-06-20 18:01:21,946 - DEBUG - [RAG] Context built for GPT (truncated):
+2025-06-20 19:56:57,945 - DEBUG - [NLP] Loaded spaCy model: en_core_web_trf
+2025-06-20 19:57:01,811 - DEBUG - [NLP] Loaded zero-shot classification model: facebook/bart-large-mnli
+2025-06-20 19:57:04,248 - DEBUG - [RAG] Azure OpenAI client initialized.
+2025-06-20 19:58:19,267 - DEBUG - [MAIN] Query: What is the date of birth of Rahul Sharma?
+2025-06-20 19:58:19,267 - DEBUG - [NLP] Input received: What is the date of birth of Rahul Sharma?
+2025-06-20 19:58:19,914 - DEBUG - [NLP] Detected language: en
+2025-06-20 19:58:20,061 - DEBUG - [NLP] NER results: [{'text': 'Rahul Sharma', 'label': 'PERSON'}]
+2025-06-20 19:58:36,830 - DEBUG - [NLP] Intent prediction: get_patient_dob (score: 0.29)
+2025-06-20 19:58:36,830 - DEBUG - [NLP] Final NLP output → Intent: 'get_patient_dob', Entity: 'Rahul Sharma'
+2025-06-20 19:58:36,830 - DEBUG - [MAIN] NLP → intent: get_patient_dob, entity: Rahul Sharma
+2025-06-20 19:58:36,830 - DEBUG - [MONGO] Initializing AsyncIOMotorClient for current event loop.
+2025-06-20 19:58:39,367 - DEBUG - [RAG] Building RAG prompt...
+2025-06-20 19:58:39,367 - DEBUG - [RAG] Context built for GPT (truncated):
 
 [NAME]
 "Rahul Sharma"
@@ -27,7 +18,7 @@
 [DOB]
 "1985-06-15"
 ...
-2025-06-20 18:01:21,946 - DEBUG - [RAG] Final prompt sent to GPT (truncated):
+2025-06-20 19:58:39,367 - DEBUG - [RAG] Final prompt sent to GPT (truncated):
 
 You are a helpful AI medical assistant for doctors.
 Here is some background information retrieved from internal systems:
@@ -45,5 +36,167 @@ What is the date of birth of Rahul Sharma?
 
 Please respond professionally, clearly, and concisely based on the above context.
 ...
-2025-06-20 18:01:25,162 - DEBUG - [RAG] GPT-4 response received.
-2025-06-20 18:01:25,162 - DEBUG - [MAIN] Response ready.
+2025-06-20 19:58:41,938 - DEBUG - [RAG] GPT-4 response received.
+2025-06-20 19:58:50,843 - DEBUG - [MAIN] Query: Show me details for Rahul Sharma
+2025-06-20 19:58:50,843 - DEBUG - [NLP] Input received: Show me details for Rahul Sharma
+2025-06-20 19:58:50,854 - DEBUG - [NLP] Detected language: en
+2025-06-20 19:58:50,949 - DEBUG - [NLP] NER results: [{'text': 'Rahul Sharma', 'label': 'PERSON'}]
+2025-06-20 19:59:00,699 - DEBUG - [NLP] Intent prediction: patient_info (score: 0.17)
+2025-06-20 19:59:00,699 - DEBUG - [NLP] Final NLP output → Intent: 'patient_info', Entity: 'Rahul Sharma'
+2025-06-20 19:59:00,699 - DEBUG - [MAIN] NLP → intent: patient_info, entity: Rahul Sharma
+2025-06-20 19:59:00,699 - DEBUG - [MONGO] Initializing AsyncIOMotorClient for current event loop.
+2025-06-20 19:59:00,711 - DEBUG - [MONGO] Searching for patient name: Rahul Sharma
+2025-06-20 19:59:03,629 - DEBUG - [RAG] Building RAG prompt...
+2025-06-20 19:59:03,629 - DEBUG - [RAG] Context built for GPT (truncated):
+
+[PATIENT]
+{
+  "_id": "68526dcf1460b36c0cf02c46",
+  "patient_id": "PAT_001",
+  "name": "Rahul Sharma",
+  "gender": "M",
+  "dob": "1985-06-15",
+  "contact": "+919876543210",
+  "uploaded_at": "2025-06-18 07:42:07.897000"
+}
+
+[ADMISSIONS]
+{
+  "_id": "68526dd21460b36c0cf02c64",
+  "admission_id": "ADM_001",
+  "patient_id": "PAT_001",
+  "admission_date": "2025-01-10",
+  "department": "Pathology",
+  "doctor": "Dr. Sanjay Kumar",
+  "uploaded_at": "2025-06-18 07:42:10.027000"
+}
+
+[PRESCRIPTIONS]
+
+[DIAGNOSE...
+2025-06-20 19:59:03,629 - DEBUG - [RAG] Final prompt sent to GPT (truncated):
+
+You are a helpful AI medical assistant for doctors.
+Here is some background information retrieved from internal systems:
+
+
+[PATIENT]
+{
+  "_id": "68526dcf1460b36c0cf02c46",
+  "patient_id": "PAT_001",
+  "name": "Rahul Sharma",
+  "gender": "M",
+  "dob": "1985-06-15",
+  "contact": "+919876543210",
+  "uploaded_at": "2025-06-18 07:42:07.897000"
+}
+
+[ADMISSIONS]
+{
+  "_id": "68526dd21460b36c0cf02c64",
+  "admission_id": "ADM_001",
+  "patient_id": "PAT_001",
+  "admission_date": "2025-01-10",
+  "department...
+2025-06-20 19:59:05,636 - DEBUG - [RAG] GPT-4 response received.
+2025-06-20 20:02:25,841 - DEBUG - [NLP] Loaded spaCy model: en_core_web_trf
+2025-06-20 20:03:13,408 - DEBUG - [NLP] Loaded zero-shot classification model: facebook/bart-large-mnli
+2025-06-20 20:03:14,684 - DEBUG - [RAG] Azure OpenAI client initialized.
+2025-06-20 20:03:31,488 - DEBUG - [MAIN] Query: What is the date of birth of Rahul Sharma?
+2025-06-20 20:03:31,488 - DEBUG - [NLP] Input received: What is the date of birth of Rahul Sharma?
+2025-06-20 20:03:31,833 - DEBUG - [NLP] Detected language: en
+2025-06-20 20:03:32,054 - DEBUG - [NLP] NER results: [{'text': 'Rahul Sharma', 'label': 'PERSON'}]
+2025-06-20 20:03:43,976 - DEBUG - [NLP] Intent prediction: get_patient_dob (score: 0.29)
+2025-06-20 20:03:43,976 - DEBUG - [NLP] Final NLP output → Intent: 'get_patient_dob', Entity: 'Rahul Sharma'
+2025-06-20 20:03:43,976 - DEBUG - [MAIN] NLP → intent: get_patient_dob, entity: Rahul Sharma
+2025-06-20 20:03:43,976 - DEBUG - [MONGO] Initializing AsyncIOMotorClient for current event loop.
+2025-06-20 20:03:52,608 - DEBUG - [RAG] Building RAG prompt...
+2025-06-20 20:03:52,608 - DEBUG - [RAG] Context built for GPT (truncated):
+
+[NAME]
+"Rahul Sharma"
+
+[DOB]
+"1985-06-15"
+...
+2025-06-20 20:03:52,610 - DEBUG - [RAG] Final prompt sent to GPT (truncated):
+
+You are a helpful AI medical assistant for doctors.
+Here is some background information retrieved from internal systems:
+
+
+[NAME]
+"Rahul Sharma"
+
+[DOB]
+"1985-06-15"
+
+
+Doctor's question:
+What is the date of birth of Rahul Sharma?
+
+Please respond professionally, clearly, and concisely based on the above context.
+...
+2025-06-20 20:04:01,480 - DEBUG - [RAG] GPT-4 response received.
+2025-06-20 20:04:13,905 - DEBUG - [MAIN] Query: Show me details for Rahul Sharma
+2025-06-20 20:04:13,905 - DEBUG - [NLP] Input received: Show me details for Rahul Sharma
+2025-06-20 20:04:13,922 - DEBUG - [NLP] Detected language: en
+2025-06-20 20:04:14,085 - DEBUG - [NLP] NER results: [{'text': 'Rahul Sharma', 'label': 'PERSON'}]
+2025-06-20 20:04:28,818 - DEBUG - [NLP] Intent prediction: patient_info (score: 0.17)
+2025-06-20 20:04:28,818 - DEBUG - [NLP] Final NLP output → Intent: 'patient_info', Entity: 'Rahul Sharma'
+2025-06-20 20:04:28,818 - DEBUG - [MAIN] NLP → intent: patient_info, entity: Rahul Sharma
+2025-06-20 20:04:28,818 - DEBUG - [MONGO] Initializing AsyncIOMotorClient for current event loop.
+2025-06-20 20:04:28,836 - DEBUG - [MONGO] Searching for patient name: Rahul Sharma
+2025-06-20 20:04:43,879 - DEBUG - [RAG] Building RAG prompt...
+2025-06-20 20:04:43,879 - DEBUG - [RAG] Context built for GPT (truncated):
+
+[PATIENT]
+{
+  "_id": "68526dcf1460b36c0cf02c46",
+  "patient_id": "PAT_001",
+  "name": "Rahul Sharma",
+  "gender": "M",
+  "dob": "1985-06-15",
+  "contact": "+919876543210",
+  "uploaded_at": "2025-06-18 07:42:07.897000"
+}
+
+[ADMISSIONS]
+{
+  "_id": "68526dd21460b36c0cf02c64",
+  "admission_id": "ADM_001",
+  "patient_id": "PAT_001",
+  "admission_date": "2025-01-10",
+  "department": "Pathology",
+  "doctor": "Dr. Sanjay Kumar",
+  "uploaded_at": "2025-06-18 07:42:10.027000"
+}
+
+[PRESCRIPTIONS]
+
+[DIAGNOSE...
+2025-06-20 20:04:43,893 - DEBUG - [RAG] Final prompt sent to GPT (truncated):
+
+You are a helpful AI medical assistant for doctors.
+Here is some background information retrieved from internal systems:
+
+
+[PATIENT]
+{
+  "_id": "68526dcf1460b36c0cf02c46",
+  "patient_id": "PAT_001",
+  "name": "Rahul Sharma",
+  "gender": "M",
+  "dob": "1985-06-15",
+  "contact": "+919876543210",
+  "uploaded_at": "2025-06-18 07:42:07.897000"
+}
+
+[ADMISSIONS]
+{
+  "_id": "68526dd21460b36c0cf02c64",
+  "admission_id": "ADM_001",
+  "patient_id": "PAT_001",
+  "admission_date": "2025-01-10",
+  "department...
+2025-06-20 20:04:52,513 - DEBUG - [RAG] GPT-4 response received.

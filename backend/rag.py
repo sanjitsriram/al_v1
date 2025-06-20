@@ -48,16 +48,16 @@ def build_context(data):
     try:
         if isinstance(data, list):
             for item in data:
-                context += json.dumps(item, indent=2) + "\n"
+                context += json.dumps(item, indent=2, default=str) + "\n"
 
         elif isinstance(data, dict):
             for key, val in data.items():
                 context += f"\n[{key.upper()}]\n"
                 if isinstance(val, list):
                     for entry in val:
-                        context += json.dumps(entry, indent=2) + "\n"
+                        context += json.dumps(entry, indent=2, default=str) + "\n"
                 else:
-                    context += json.dumps(val, indent=2) + "\n"
+                    context += json.dumps(val, indent=2, default=str) + "\n"
 
         else:
             context = str(data)
@@ -104,7 +104,7 @@ Please respond professionally, clearly, and concisely based on the above context
                 {"role": "user", "content": full_prompt}
             ],
             temperature=0.6,
-            max_tokens=10
+            max_tokens=100
         )
 
         answer = response.choices[0].message.content
