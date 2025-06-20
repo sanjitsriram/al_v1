@@ -1,0 +1,5 @@
+streamlit
+pymongo
+openai
+python-dotenv
+nest_asyncio

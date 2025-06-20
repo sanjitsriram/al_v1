@@ -1,0 +1,49 @@
+2025-06-20 17:59:38,977 - DEBUG - [MAIN] Received query: Who was  Rahul Sharma?
+2025-06-20 17:59:38,979 - DEBUG - [NLP] Input received: Who was  Rahul Sharma?
+2025-06-20 17:59:39,732 - DEBUG - [NLP] Detected language: so
+2025-06-20 17:59:40,011 - DEBUG - [NLP] NER results: [{'text': 'Rahul Sharma', 'label': 'PERSON'}]
+2025-06-20 18:00:00,379 - DEBUG - [NLP] Intent prediction: referral_status (score: 0.13)
+2025-06-20 18:00:00,379 - DEBUG - [NLP] Final NLP output → Intent: 'referral_status', Entity: 'Rahul Sharma'
+2025-06-20 18:00:00,379 - DEBUG - [MAIN] NLP result → intent: 'referral_status', entity: 'Rahul Sharma'
+2025-06-20 18:00:00,379 - DEBUG - [MAIN] Handling new intent: referral_status
+2025-06-20 18:01:00,445 - DEBUG - [MAIN] Received query: What is the date of birth of Rahul Sharma?
+2025-06-20 18:01:00,445 - DEBUG - [NLP] Input received: What is the date of birth of Rahul Sharma?
+2025-06-20 18:01:00,445 - DEBUG - [NLP] Detected language: en
+2025-06-20 18:01:00,653 - DEBUG - [NLP] NER results: [{'text': 'Rahul Sharma', 'label': 'PERSON'}]
+2025-06-20 18:01:18,895 - DEBUG - [NLP] Intent prediction: get_patient_dob (score: 0.29)
+2025-06-20 18:01:18,895 - DEBUG - [NLP] Final NLP output → Intent: 'get_patient_dob', Entity: 'Rahul Sharma'
+2025-06-20 18:01:18,895 - DEBUG - [MAIN] NLP result → intent: 'get_patient_dob', entity: 'Rahul Sharma'
+2025-06-20 18:01:18,895 - DEBUG - [MAIN] Routing to get_patient_dob('Rahul Sharma')
+2025-06-20 18:01:18,895 - DEBUG - [MONGO] Initializing AsyncIOMotorClient for current event loop.
+2025-06-20 18:01:18,945 - DEBUG - [MONGO] Querying DOB for: Rahul Sharma
+2025-06-20 18:01:21,943 - DEBUG - [MONGO] Found DOB for Rahul Sharma: 1985-06-15
+2025-06-20 18:01:21,946 - DEBUG - [MAIN] Sending context to RAG generator...
+2025-06-20 18:01:21,946 - DEBUG - [RAG] Building RAG prompt...
+2025-06-20 18:01:21,946 - DEBUG - [RAG] Context built for GPT (truncated):
+
+[NAME]
+"Rahul Sharma"
+
+[DOB]
+"1985-06-15"
+...
+2025-06-20 18:01:21,946 - DEBUG - [RAG] Final prompt sent to GPT (truncated):
+
+You are a helpful AI medical assistant for doctors.
+Here is some background information retrieved from internal systems:
+
+
+[NAME]
+"Rahul Sharma"
+
+[DOB]
+"1985-06-15"
+
+
+Doctor's question:
+What is the date of birth of Rahul Sharma?
+
+Please respond professionally, clearly, and concisely based on the above context.
+...
+2025-06-20 18:01:25,162 - DEBUG - [RAG] GPT-4 response received.
+2025-06-20 18:01:25,162 - DEBUG - [MAIN] Response ready.
