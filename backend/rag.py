@@ -1,9 +1,10 @@
 """
-Builds a context-rich prompt using RAG and sends it to Azure OpenAI GPT-4.
+Enterprise RAG Module for MedGPT: Structured prompt generation + GPT-4 API inference.
 """
 
 import json
 import logging
+import hashlib
 from openai import AzureOpenAI
 from backend.config import (
     AZURE_OPENAI_API_KEY,
@@ -15,105 +16,120 @@ from backend.config import (
 # ---------------------- Logging Setup ----------------------
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-
 if not logger.handlers:
-    handler = logging.FileHandler("logs/chatbot.log")
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-    handler.setFormatter(formatter)
+    handler = logging.FileHandler("logs/chatbot.log", encoding="utf-8")
+    handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
     logger.addHandler(handler)
 
-# ---------------------- Azure GPT-4 Client Setup ----------------------
+# ---------------------- Azure GPT-4 Client ----------------------
 try:
     client = AzureOpenAI(
         api_key=AZURE_OPENAI_API_KEY,
         api_version=AZURE_OPENAI_API_VERSION,
         azure_endpoint=AZURE_OPENAI_ENDPOINT
     )
-    logger.debug("[RAG] Azure OpenAI client initialized.")
-except Exception as e:
-    logger.exception("[RAG] ❌ Failed to initialize Azure OpenAI client.")
+    logger.debug("[RAG] ✅ Azure OpenAI client initialized.")
+except Exception:
+    logger.exception("[RAG] ❌ Azure client initialization failed.")
     client = None
 
-# ---------------------- CONTEXT BUILDER ----------------------
-def build_context(data):
+# ---------------------- Context Formatter ----------------------
+def serialize_context(data, max_len=6000, indent=2) -> str:
     """
-    Converts dictionary or list data (from MongoDB) into a human-readable context string.
+    Converts MongoDB data into structured, markdown-like format.
     """
-    context = ""
-
     if not data:
-        logger.debug("[RAG] Empty context data.")
-        return "No relevant data was found in the system."
+        logger.debug("[RAG] No context data found.")
+        return "⚠️ No records found in the system for the requested query."
 
     try:
-        if isinstance(data, list):
-            for item in data:
-                context += json.dumps(item, indent=2, default=str) + "\n"
-
-        elif isinstance(data, dict):
-            for key, val in data.items():
-                context += f"\n[{key.upper()}]\n"
+        output = []
+        if isinstance(data, dict):
+            for section, val in data.items():
+                output.append(f"\n### {section.upper()}")
                 if isinstance(val, list):
-                    for entry in val:
-                        context += json.dumps(entry, indent=2, default=str) + "\n"
+                    for item in val:
+                        formatted = json.dumps(item, indent=indent, default=str)
+                        output.append(formatted)
                 else:
-                    context += json.dumps(val, indent=2, default=str) + "\n"
+                    output.append(json.dumps(val, indent=indent, default=str))
+
+        elif isinstance(data, list):
+            for entry in data:
+                output.append(json.dumps(entry, indent=indent, default=str))
 
         else:
-            context = str(data)
+            output.append(str(data))
 
-        logger.debug(f"[RAG] Context built for GPT (truncated):\n{context[:500]}...")
+        full_output = "\n".join(output)
+        if len(full_output) > max_len:
+            logger.warning("[RAG] Context truncated due to length limit.")
+            return full_output[:max_len] + "\n\n⚠️ Context truncated due to length."
 
-    except Exception as e:
-        logger.exception("[RAG] Failed to build context.")
-        context = "⚠️ Context could not be formatted."
+        return full_output
 
-    return context
+    except Exception:
+        logger.exception("[RAG] Failed to serialize context.")
+        return "⚠️ Failed to prepare context for the assistant."
 
-# ---------------------- RAG MAIN FUNCTION ----------------------
-def generate_response(user_query, context_data):
+# ---------------------- Prompt Generator ----------------------
+def build_prompt(user_query: str, context: str) -> str:
     """
-    Builds the final prompt using retrieved MongoDB data
-    and sends it to GPT-4 to generate a response.
+    Builds structured prompt with explicit clinical instructions.
     """
-    try:
-        logger.debug("[RAG] Building RAG prompt...")
-        context = build_context(context_data)
+    return f"""
+You are MedGPT, an AI medical assistant for doctors in a hospital.
+Respond clearly and concisely using **only** the data provided below.
+If information is missing or incomplete, **say that explicitly**.
 
-        full_prompt = f"""
-You are a helpful AI medical assistant for doctors.
-Here is some background information retrieved from internal systems:
-
+-----------------------
+[INTERNAL MEDICAL DATA]
 {context}
+-----------------------
 
-Doctor's question:
+[DOCTOR'S QUESTION]
 {user_query}
 
-Please respond professionally, clearly, and concisely based on the above context.
-"""
+Instructions:
+- NEVER hallucinate or assume facts.
+- If no data is found, respond: "No relevant records were found for this query."
+- Maintain a professional, clinical tone.
+""".strip()
 
-        logger.debug(f"[RAG] Final prompt sent to GPT (truncated):\n{full_prompt[:500]}...")
+# ---------------------- GPT Inference ----------------------
+def generate_response(user_query: str, context_data) -> str:
+    """
+    Runs full RAG pipeline: context → prompt → GPT → response.
+    """
+    try:
+        logger.debug("[RAG] Serializing context for prompt...")
+        context = serialize_context(context_data)
+        prompt = build_prompt(user_query, context)
+
+        prompt_hash = hashlib.sha256(prompt.encode()).hexdigest()[:10]
+        logger.debug(f"[RAG] Prompt hash: {prompt_hash} | Length: {len(prompt)}")
 
         if not client:
-            raise RuntimeError("Azure OpenAI client is not initialized.")
+            raise RuntimeError("Azure GPT client is not available.")
 
         response = client.chat.completions.create(
             model=AZURE_OPENAI_DEPLOYMENT,
             messages=[
-                {"role": "system", "content": "You are a helpful medical assistant."},
-                {"role": "user", "content": full_prompt}
+                {"role": "system", "content": "You are a factual, helpful, and concise medical assistant."},
+                {"role": "user", "content": prompt}
             ],
-            temperature=0.6,
-            max_tokens=100
+            temperature=0.7,
+            max_tokens=350,
+            n=1,
         )
 
-        answer = response.choices[0].message.content
-        logger.debug("[RAG] GPT-4 response received.")
-        return answer
+        result = response.choices[0].message.content.strip()
+        logger.debug("[RAG] ✅ Response generated. Tokens used: ~%d", len(result.split()))
+        return result
 
     except Exception as e:
-        logger.exception("[RAG] GPT API call failed.")
+        logger.exception("[RAG] GPT-4 call failed.")
         return (
-            "⚠️ Sorry, I couldn’t generate a response due to a system error. "
-            "Please try again or rephrase your question."
+            "⚠️ A system error occurred while generating the answer. "
+            "Please try again later or consult technical support."
         )
